@@ -1,28 +1,78 @@
 {% extends "base.html" %}
 {% block content %}
-    <canvas id="noviceChart" width="900" height="400"></canvas>
-    <script>
-        var ctx = document.getElementById("noviceChart").getContext("2d");
-        console.log("ctx = " + ctx);
-        var noviceChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: {{ quiz_answers_block_dict["novice"]["question_nos"] | safe }},
-                datasets: [{
-                    label: 'Scores',
-                    data: {{ quiz_answers_block_dict["novice"]["answer_scores"] | safe }},
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Novice Quiz Scores'
-                    }
-                }       
-            }
-        });
-    </script>
+<div class="overall-result">
+    <h2>Загальний результат тесту становить {{ score_number }}</h2>
+    <h3>{{ current_user.username }}, Ви {{ programmer_level }}<h3>
+</div>
+<div class="result-description">
+    <p>{{ programmer_level_description }}</p>
+</div>
+    
+<div class="chart-container">
+    {% for block, answer_dict in quiz_answers_block_dict.items() %}
+        <canvas id="{{ block }}Chart" class="chart-canvas" width="750" height="350"></canvas>
+        <script>
+            var ctx = document.getElementById("{{ block }}Chart").getContext("2d");
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ answer_dict["question_nos"] | safe }},
+                    datasets: [{
+                        label: 'Scores',
+                        data: {{ answer_dict["answer_scores"] | safe }},
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '{{ block | capitalize }} Quiz Scores',
+                            font: {
+                                family: 'Times',
+                                size: 20,
+                                style: 'normal',
+                                lineHeight: 1.2
+                            },
+                        }
+                    }       
+                }
+            });
+        </script>
+    {% endfor %}
+</div>
+
+<style>
+    .overall-result {
+        display: flex;
+        flex-direction: column; 
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+        margin: 0 auto;
+        margin-bottom: 20px;
+    }
+
+    .result-description {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+        margin: 0 auto;
+        margin-bottom: 20px;
+    }
+
+    .chart-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chart-canvas {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+</style>
 {% endblock %}
