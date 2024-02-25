@@ -1,8 +1,9 @@
+from datetime import datetime
 from flask import render_template, url_for, redirect, request, flash
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 from main_project import app, db
-from main_project.models import User
+from main_project.models import User, Quiz, UserAnswer
 from main_project.forms import *
 
 @app.route('/')
@@ -76,19 +77,33 @@ def quiz(block):
     
     form = blocks_forms[block]
     if form.validate_on_submit():
+        print(f"\nblock = {block}")
         if block != "novice":
-            print(f"\nblock = {block}")
-            q1_answer = form.q1_choice.data
-            q2_answer = form.q2_choice.data
-            q3_answer = form.q3_choice.data
-            print(f"q1_answer = {q1_answer}; q2_answer={q2_answer}; q3_answer={q3_answer}")
+            # Get last quiz
+            quiz = Quiz.query.all()[-1]
+            print(f"quiz.id = {quiz.id}")
+            q1_answer = UserAnswer(quiz_id=quiz.id, block_name=block, question_no=1, answer_score=form.q1_choice.data)
+            q2_answer = UserAnswer(quiz_id=quiz.id, block_name=block, question_no=2, answer_score=form.q2_choice.data)
+            q3_answer = UserAnswer(quiz_id=quiz.id, block_name=block, question_no=3, answer_score=form.q3_choice.data)
+            db.session.add_all([q1_answer, q2_answer, q3_answer])
+            db.session.commit()
+            print(f"q1_answer = {q1_answer.answer_score}; q2_answer={q2_answer.answer_score}; q3_answer={q3_answer.answer_score}")
         else:
-            print(f"\nblock = {block}")
-            q1_answer = form.q1_choice.data
-            q2_answer = form.q2_choice.data
-            q3_answer = form.q3_choice.data
-            q4_answer = form.q4_choice.data
-            print(f"q1_answer = {q1_answer}; q2_answer={q2_answer}; q3_answer={q3_answer}; q4_answer={q4_answer}")
+            # if there is no prev buttons
+            # Create a quiz table record
+            print(f"current_user.id = {current_user.id}")
+            quiz = Quiz(user_id=current_user.id, datetime=datetime.now())
+            db.session.add(quiz)
+            db.session.commit()
+
+            q1_answer = UserAnswer(quiz_id=quiz.id, block_name='novice', question_no=1, answer_score=form.q1_choice.data)
+            q2_answer = UserAnswer(quiz_id=quiz.id, block_name='novice', question_no=2, answer_score=form.q2_choice.data)
+            q3_answer = UserAnswer(quiz_id=quiz.id, block_name='novice', question_no=3, answer_score=form.q3_choice.data)
+            q4_answer = UserAnswer(quiz_id=quiz.id, block_name='novice', question_no=4, answer_score=form.q4_choice.data)
+            db.session.add_all([q1_answer, q2_answer, q3_answer, q4_answer])
+            db.session.commit()
+            print(f"q1_answer = {q1_answer.answer_score}; q2_answer={q2_answer.answer_score}; q3_answer={q3_answer.answer_score}; q4_answer={q4_answer.answer_score}")
+
 
         if block != "expert":
             current_index = blocks.index(block)
