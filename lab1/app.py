@@ -3,7 +3,7 @@ from flask_login import login_user, login_required, logout_user
 
 from main_project import app, db
 from main_project.models import User
-from main_project.forms import LoginForm, RegisterForm
+from main_project.forms import *
 
 @app.route('/')
 def home():
@@ -51,6 +51,34 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
+@app.route('/quiz', methods=["GET", "POST"])
+@login_required
+def quiz():
+    form = QuizForm()
+    return render_template('quiz.html', form=form)
+
+"""
+@app.route('/quiz', methods=["GET", "POST"])
+@login_required
+def quiz():
+    blocks_forms = {"Novice": NoviceForm(), "Advanced beginner": AdvancedBeginnerForm(),
+                   "Competent": CompetentForm(), "Proficient": ProficientForm(),
+                   "Expert": ExpertForm()}
+    blocks = ["Novice", "Advanced beginner", "Competent", "Proficient", "Expert"]
+    blocks_answers = {"Novice": [], "Advanced beginner": [], "Competent": [], "Proficient": [], "Expert": []}
+    index = 0
+    block = blocks[index]
+    form = NoviceForm()
+    if form.validate_on_submit():
+        if block != "Novice":
+            blocks_answers[block].extend((form.q1_choice.data,  form.q2_choice.data,  form.q3_choice.data))
+        else:
+            blocks_answers[block].extend((form.q1_choice.data,  form.q2_choice.data,  form.q3_choice.data, form.q4_choice.data))
+        index += 1
+        block = blocks[index]
+        return render_template("quiz.html", form=blocks_forms[block], block=block, blocks_answers=blocks_answers)
+    return render_template("quiz.html", form=form, block="Novice", blocks_answers=blocks_answers)
+"""
 
 if __name__ == '__main__':
     app.run(debug=True)

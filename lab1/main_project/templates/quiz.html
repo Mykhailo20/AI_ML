@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+    <form method="post">
+        {{ form.hidden_tag() }}
+        {{ form.novice_q1_choice.label }}<br> {{ form.novice_q1_choice() }}<br>
+        {{ form.novice_q2_choice.label }}<br> {{ form.novice_q2_choice() }}<br>
+        {{ form.novice_q3_choice.label }}<br> {{ form.novice_q3_choice() }}<br>
+        {{ form.novice_q4_choice.label }}<br> {{ form.novice_q4_choice() }}<br>
+
+        {{ form.adv_beg_q1_choice.label }}<br> {{ form.adv_beg_q1_choice() }}<br>
+        {{ form.adv_beg_q2_choice.label }}<br> {{ form.adv_beg_q2_choice() }}<br>
+        {{ form.adv_beg_q3_choice.label }}<br> {{ form.adv_beg_q3_choice() }}<br>
+
+        {{ form.comp_q1_choice.label }}<br> {{ form.comp_q1_choice() }}<br>
+        {{ form.comp_q2_choice.label }}<br> {{ form.comp_q2_choice() }}<br>
+        {{ form.comp_q3_choice.label }}<br> {{ form.comp_q3_choice() }}<br>
+
+        {{ form.prof_q1_choice.label }}<br> {{ form.prof_q1_choice() }}<br>
+        {{ form.prof_q2_choice.label }}<br> {{ form.prof_q2_choice() }}<br>
+        {{ form.prof_q3_choice.label }}<br> {{ form.prof_q3_choice() }}<br>
+
+        {{ form.exp_q1_choice.label }}<br> {{ form.exp_q1_choice() }}<br>
+        {{ form.exp_q2_choice.label }}<br> {{ form.exp_q2_choice() }}<br>
+        {{ form.exp_q3_choice.label }}<br> {{ form.exp_q3_choice() }}<br>
+        {{ form.submit() }}
+    </form>
+</div>
+{% endblock %}
