@@ -51,34 +51,58 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
-@app.route('/quiz', methods=["GET", "POST"])
-@login_required
-def quiz():
-    form = QuizForm()
-    return render_template('quiz.html', form=form)
-
 """
-@app.route('/quiz', methods=["GET", "POST"])
+@app.route('/quiz_novice', methods=["GET", "POST"])
 @login_required
-def quiz():
-    blocks_forms = {"Novice": NoviceForm(), "Advanced beginner": AdvancedBeginnerForm(),
-                   "Competent": CompetentForm(), "Proficient": ProficientForm(),
-                   "Expert": ExpertForm()}
-    blocks = ["Novice", "Advanced beginner", "Competent", "Proficient", "Expert"]
-    blocks_answers = {"Novice": [], "Advanced beginner": [], "Competent": [], "Proficient": [], "Expert": []}
-    index = 0
-    block = blocks[index]
+def quiz_novice():
     form = NoviceForm()
     if form.validate_on_submit():
-        if block != "Novice":
-            blocks_answers[block].extend((form.q1_choice.data,  form.q2_choice.data,  form.q3_choice.data))
-        else:
-            blocks_answers[block].extend((form.q1_choice.data,  form.q2_choice.data,  form.q3_choice.data, form.q4_choice.data))
-        index += 1
-        block = blocks[index]
-        return render_template("quiz.html", form=blocks_forms[block], block=block, blocks_answers=blocks_answers)
-    return render_template("quiz.html", form=form, block="Novice", blocks_answers=blocks_answers)
+        q1_answer = form.q1_choice.data
+        q2_answer = form.q2_choice.data
+        q3_answer = form.q3_choice.data
+        q4_answer = form.q4_choice.data
+        print(f"q1_answer = {q1_answer}; q2_answer={q2_answer}; q3_answer={q3_answer}; q4_answer={q4_answer}")
+        return redirect(url_for('quiz_adv_beginner'))
+    return render_template('quiz.html', form=form, block="Novice")
 """
+
+@app.route('/quiz/<block>', methods=["GET", "POST"])
+@login_required
+def quiz(block):
+    blocks_forms = {"novice": NoviceForm(), "advanced_beginner": AdvancedBeginnerForm(),
+                   "competent": CompetentForm(), "proficient": ProficientForm(),
+                   "expert": ExpertForm()}
+    blocks = list(blocks_forms.keys())
+    
+    form = blocks_forms[block]
+    if form.validate_on_submit():
+        if block != "novice":
+            print(f"\nblock = {block}")
+            q1_answer = form.q1_choice.data
+            q2_answer = form.q2_choice.data
+            q3_answer = form.q3_choice.data
+            print(f"q1_answer = {q1_answer}; q2_answer={q2_answer}; q3_answer={q3_answer}")
+        else:
+            print(f"\nblock = {block}")
+            q1_answer = form.q1_choice.data
+            q2_answer = form.q2_choice.data
+            q3_answer = form.q3_choice.data
+            q4_answer = form.q4_choice.data
+            print(f"q1_answer = {q1_answer}; q2_answer={q2_answer}; q3_answer={q3_answer}; q4_answer={q4_answer}")
+
+        if block != "expert":
+            current_index = blocks.index(block)
+            next_block = blocks[current_index + 1]
+            return redirect(url_for('quiz', block=next_block))
+        return redirect(url_for('quiz_results'))
+    return render_template('quiz.html', form=form, block=block)
+
+
+@app.route('/quiz_results', methods=["GET", "POST"])
+@login_required
+def quiz_results():
+    return "<h1>quiz_results</h1>"
+
 
 if __name__ == '__main__':
     app.run(debug=True)
