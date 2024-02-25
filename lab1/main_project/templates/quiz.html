@@ -1,26 +1,72 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="jumbotron">
-    <form method="post">
+<div class="quiz-container">
+    <form method="post" class="quiz-form">
         {{ form.hidden_tag() }}
-
+    
         {% if block == "novice" %}
-            {{ form.q1_choice.label }}<br> {{ form.q1_choice() }}<br>
-            {{ form.q2_choice.label }}<br> {{ form.q2_choice() }}<br>
-            {{ form.q3_choice.label }}<br> {{ form.q3_choice() }}<br>
-            {{ form.q4_choice.label }}<br> {{ form.q4_choice() }}<br>
-            {{ form.submit_next() }}
+            <div class="form-group">
+                {{ form.q1_choice.label }}<br> {{ form.q1_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.q2_choice.label }}<br> {{ form.q2_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.q3_choice.label }}<br> {{ form.q3_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.q4_choice.label }}<br> {{ form.q4_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.submit_next(class="btn btn-primary") }}
+            </div>
+            
         {% elif block == "expert" %}
-            {{ form.q1_choice.label }}<br> {{ form.q1_choice() }}<br>
-            {{ form.q2_choice.label }}<br> {{ form.q2_choice() }}<br>
-            {{ form.q3_choice.label }}<br> {{ form.q3_choice() }}<br>
-            {{ form.submit() }}
+            <div class="form-group">
+                {{ form.q1_choice.label }}<br> {{ form.q1_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.q2_choice.label }}<br> {{ form.q2_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.q3_choice.label }}<br> {{ form.q3_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
         {% else %}
-            {{ form.q1_choice.label }}<br> {{ form.q1_choice() }}<br>
-            {{ form.q2_choice.label }}<br> {{ form.q2_choice() }}<br>
-            {{ form.q3_choice.label }}<br> {{ form.q3_choice() }}<br>
-            {{ form.submit_next() }}
+            <div class="form-group">
+                {{ form.q1_choice.label }}<br> {{ form.q1_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.q2_choice.label }}<br> {{ form.q2_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.q3_choice.label }}<br> {{ form.q3_choice(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                {{ form.submit_next(class="btn btn-primary") }}
+            </div>
         {% endif %}
     </form>
 </div>
+
+
+<style>
+    .quiz-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 85vh;
+        margin: 0;
+    }
+
+    .quiz-form {
+        width: 50%;
+        margin: 0 auto;
+        border: 1px solid #ccc;
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+</style>
 {% endblock %}

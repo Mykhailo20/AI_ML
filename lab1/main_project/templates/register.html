@@ -1,12 +1,44 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="jumbotron">
-    <form method="POST">
+<div class="form-container">
+    <form method="POST" class="register-form">
         {{ form.hidden_tag() }}
-        {{ form.username.label }} {{ form.username() }}<br>
-        {{ form.password.label }} {{ form.password() }}<br>
-        {{ form.pass_confirm.label }} {{ form.pass_confirm() }}<br>
-        {{ form.submit() }}
+        <div class="form-group">
+            {{ form.username.label }} {{ form.username(id="register-username") }}<br>
+        </div>
+        <div class="form-group">
+            {{ form.password.label }} {{ form.password(id="register-password") }}<br>
+        </div>
+        <div class="form-group">
+            {{ form.pass_confirm.label }} {{ form.pass_confirm() }}<br>
+        </div>
+        {{ form.submit(class="btn btn-primary") }}
     </form>
 </div>
+    
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+        margin: 0;
+    }
+
+    .register-form {
+        width: 50%;
+        margin: 0 auto;
+        border: 1px solid #ccc;
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+
+    #register-username {
+        margin-left: 55px;
+    }
+
+    #register-password {
+        margin-left: 60px;
+    }
+</style>
 {% endblock %}

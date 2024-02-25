@@ -1,11 +1,41 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="jumbotron">
-    <form method="POST">
+<div class="form-container">
+    <form method="POST" class="login-form">
         {{ form.hidden_tag() }}
-        {{ form.username.label }} {{ form.username() }}<br>
-        {{ form.password.label }} {{ form.password() }}<br>
-        {{ form.submit() }}
+        <div class="form-group">
+            {{ form.username.label }} {{ form.username() }}<br>
+        </div>
+        <div class="form-group">
+            {{ form.password.label }} {{ form.password(id="login_password") }}<br>
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
     </form>
 </div>
+
+
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+        margin: 0;
+    }
+
+    .login-form {
+        width: 50%;
+        margin: 0 auto;
+        border: 1px solid #ccc;
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+
+    #login_password {
+        margin-left: 5px;
+    }
+</style>
+
 {% endblock %}

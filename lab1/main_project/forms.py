@@ -72,5 +72,3 @@ class ExpertForm(FlaskForm):
     q3_choice = SelectField(u"Чи застовуєте рішення задач за аналогією?", 
                             choices=[(5, "часто"), (3, "зрідка"), (2, "тільки власний варіант")])
     submit = SubmitField("Submit")    
-
-    
