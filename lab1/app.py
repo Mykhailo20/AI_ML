@@ -116,7 +116,23 @@ def quiz(block):
 @app.route('/quiz_results', methods=["GET", "POST"])
 @login_required
 def quiz_results():
-    return "<h1>quiz_results</h1>"
+    current_quiz = Quiz.query.all()[-1]
+    print(f"quiz.id = {current_quiz.id}")
+    quiz_answers = UserAnswer.query.filter_by(quiz_id=current_quiz.id).all()
+    print(f"len(quiz_answers) = {len(quiz_answers)}")
+    for answer in quiz_answers:
+        print(f"answer.id = {answer.id}, answer.quiz_id = {answer.quiz_id}, answer.block_name = {answer.block_name}")
+        print(f"answer.question_no={answer.question_no}, answer.answer_score = {answer.answer_score}\n")
+    
+    quiz_answers_block = {}
+    for answer in quiz_answers:
+        block_name = answer.block_name
+        if block_name not in quiz_answers_block:
+            quiz_answers_block[block_name] = {'question_nos': [], 'answer_scores': []}
+        quiz_answers_block[block_name]['question_nos'].append(answer.question_no)
+        quiz_answers_block[block_name]['answer_scores'].append(answer.answer_score)
+        
+    return render_template("quiz_results.html", quiz_answers_block_dict=quiz_answers_block)
 
 
 if __name__ == '__main__':

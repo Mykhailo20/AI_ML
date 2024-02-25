@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+    <canvas id="noviceChart" width="900" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById("noviceChart").getContext("2d");
+        console.log("ctx = " + ctx);
+        var noviceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ quiz_answers_block_dict["novice"]["question_nos"] | safe }},
+                datasets: [{
+                    label: 'Scores',
+                    data: {{ quiz_answers_block_dict["novice"]["answer_scores"] | safe }},
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Novice Quiz Scores'
+                    }
+                }       
+            }
+        });
+    </script>
+{% endblock %}
