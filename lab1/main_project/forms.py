@@ -5,16 +5,16 @@ from wtforms import ValidationError
 from main_project.models import User
 
 class LoginForm(FlaskForm):
-    username = StringField("Username: ", validators=[DataRequired()])
-    password = PasswordField("Password: ", validators=[DataRequired()])
-    submit = SubmitField("Log In")
+    username = StringField("Ім'я користувача: ", validators=[DataRequired()])
+    password = PasswordField("Пароль: ", validators=[DataRequired()])
+    submit = SubmitField("Увійти")
 
 
 class RegisterForm(FlaskForm):
-    username = StringField("Username: ", validators=[DataRequired()])
-    password = PasswordField("Password: ", validators=[DataRequired(), EqualTo('pass_confirm', message='Passwords Must Match!')])
-    pass_confirm = PasswordField("Confirm Password: ", validators=[DataRequired()])
-    submit = SubmitField("Register")
+    username = StringField("Ім'я користувача: ", validators=[DataRequired()])
+    password = PasswordField("Пароль: ", validators=[DataRequired(), EqualTo('pass_confirm', message='Passwords Must Match!')])
+    pass_confirm = PasswordField("Підтвердьте пароль: ", validators=[DataRequired()])
+    submit = SubmitField("Зареєструватися")
 
     def validate_username(self, field):
         # Check if not None for that username!
@@ -31,7 +31,7 @@ class NoviceForm(FlaskForm):
                             choices=[(5, "неодмінно"), (3, "поступово"), (2, "зрідка")])
     q4_choice = SelectField(u"Чи потрібен чіткий алгоритм для вирішення задач?", 
                             choices=[(5, "так"), (3, "в окремих випадках"), (2, "не потрібен")])
-    submit_next = SubmitField("Next")
+    submit_next = SubmitField("Наступний блок")
 
 
 class AdvancedBeginnerForm(FlaskForm):
@@ -42,7 +42,7 @@ class AdvancedBeginnerForm(FlaskForm):
     q3_choice = SelectField(u"Чи відчуваєте ви загальний контекст вирішення задачі?", 
                             choices=[(5, "в окремих випадках"), (3, "частково"), (2, "так")])
     submit_prev = SubmitField("Prev")
-    submit_next = SubmitField("Next")
+    submit_next = SubmitField("Наступний блок")
     
 class CompetentForm(FlaskForm):
     q1_choice = SelectField(u"Чи можете ви побудувати модель вирішуваної задачі?", 
@@ -52,7 +52,7 @@ class CompetentForm(FlaskForm):
     q3_choice = SelectField(u"Чи можете вирішувати проблеми, з якими ще не стикались?", 
                             choices=[(5, "ні"), (3, "в окремих випадках"), (2, "так")])
     submit_prev = SubmitField("Prev")
-    submit_next = SubmitField("Next")
+    submit_next = SubmitField("Наступний блок")
 
 class ProficientForm(FlaskForm):
     q1_choice = SelectField(u"Чи необхідний вам весь контекст задачі?", 
@@ -62,13 +62,13 @@ class ProficientForm(FlaskForm):
     q3_choice = SelectField(u"Чи здатні  ви  навчатись у інших?", 
                             choices=[(5, "так"), (3, "зрідка"), (2, "коли є потреба")])
     submit_prev = SubmitField("Prev")
-    submit_next = SubmitField("Next")
+    submit_next = SubmitField("Наступний блок")
 
 class ExpertForm(FlaskForm):
     q1_choice = SelectField(u"Чи обираєте ви нові методи своєї роботи?", 
                             choices=[(5, "так"), (3, "вибірково"), (2, "вистачає досвіду")])
     q2_choice = SelectField(u"Чи допомагає власна інтуїція при вирішенні задач?", 
                             choices=[(5, "так"), (3, "частково"), (2, "при емоційному напруженні")])
-    q3_choice = SelectField(u"Чи застовуєте рішення задач за аналогією?", 
+    q3_choice = SelectField(u"Чи застосовуєте рішення задач за аналогією?", 
                             choices=[(5, "часто"), (3, "зрідка"), (2, "тільки власний варіант")])
-    submit = SubmitField("Submit")    
+    submit = SubmitField("Завершити анкетування")    

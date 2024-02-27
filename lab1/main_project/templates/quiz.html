@@ -3,8 +3,10 @@
 <div class="quiz-container">
     <form method="post" class="quiz-form">
         {{ form.hidden_tag() }}
-    
-        {% if block == "novice" %}
+        <div class="block-name">
+            <h3> {{block | capitalize() }}</h3>
+        </div>
+        {% if block == "новачок" %}
             <div class="form-group">
                 {{ form.q1_choice.label }}<br> {{ form.q1_choice(class="form-control") }}<br>
             </div>
@@ -21,7 +23,7 @@
                 {{ form.submit_next(class="btn btn-primary") }}
             </div>
             
-        {% elif block == "expert" %}
+        {% elif block == "експерт" %}
             <div class="form-group">
                 {{ form.q1_choice.label }}<br> {{ form.q1_choice(class="form-control") }}<br>
             </div>
@@ -53,6 +55,13 @@
 
 
 <style>
+    .block-name {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
     .quiz-container {
         display: flex;
         justify-content: center;

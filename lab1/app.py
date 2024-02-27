@@ -55,27 +55,30 @@ def register():
 @app.route('/quiz/<block>', methods=["GET", "POST"])
 @login_required
 def quiz(block):
-    blocks_forms = {"novice": NoviceForm(), "advanced_beginner": AdvancedBeginnerForm(),
-                   "competent": CompetentForm(), "proficient": ProficientForm(),
-                   "expert": ExpertForm()}
-    blocks = list(blocks_forms.keys())
-    
-    form = blocks_forms[block]
+    url_block = {
+         "novice": "новачок", "advanced_beginner": "твердий початківець", "competent": "компетентний",
+         "proficient": "досвідчений", "expert": "експерт"
+    }
+    blocks_forms = {"новачок": NoviceForm(), "твердий початківець": AdvancedBeginnerForm(),
+                   "компетентний": CompetentForm(), "досвідчений": ProficientForm(),
+                   "експерт": ExpertForm()}
+    blocks = list(url_block.keys())
+
+    block_ukr = url_block[block]
+    form = blocks_forms[block_ukr]
     if form.validate_on_submit():
-        if block != "novice":
+        if block_ukr != "новачок":
             # Get last quiz
             quiz = Quiz.query.all()[-1]
-            print(f"quiz.id = {quiz.id}")
+
             q1_answer = UserAnswer(quiz_id=quiz.id, block_name=block, question_no=1, answer_score=form.q1_choice.data)
             q2_answer = UserAnswer(quiz_id=quiz.id, block_name=block, question_no=2, answer_score=form.q2_choice.data)
             q3_answer = UserAnswer(quiz_id=quiz.id, block_name=block, question_no=3, answer_score=form.q3_choice.data)
             db.session.add_all([q1_answer, q2_answer, q3_answer])
             db.session.commit()
-            print(f"q1_answer = {q1_answer.answer_score}; q2_answer={q2_answer.answer_score}; q3_answer={q3_answer.answer_score}")
         else:
             # if there is no prev buttons
             # Create a quiz table record
-            print(f"current_user.id = {current_user.id}")
             quiz = Quiz(user_id=current_user.id, datetime=datetime.now())
             db.session.add(quiz)
             db.session.commit()
@@ -86,28 +89,24 @@ def quiz(block):
             q4_answer = UserAnswer(quiz_id=quiz.id, block_name='novice', question_no=4, answer_score=form.q4_choice.data)
             db.session.add_all([q1_answer, q2_answer, q3_answer, q4_answer])
             db.session.commit()
-            print(f"q1_answer = {q1_answer.answer_score}; q2_answer={q2_answer.answer_score}; q3_answer={q3_answer.answer_score}; q4_answer={q4_answer.answer_score}")
 
-
-        if block != "expert":
+        if block_ukr != "експерт":
             current_index = blocks.index(block)
             next_block = blocks[current_index + 1]
             return redirect(url_for('quiz', block=next_block))
         return redirect(url_for('quiz_results'))
-    return render_template('quiz.html', form=form, block=block)
+    return render_template('quiz.html', form=form, block=block_ukr)
 
 
 @app.route('/quiz_results', methods=["GET", "POST"])
 @login_required
 def quiz_results():
     current_quiz = Quiz.query.all()[-1]
-    print(f"quiz.id = {current_quiz.id}")
     quiz_answers = UserAnswer.query.filter_by(quiz_id=current_quiz.id).all()
-    print(f"len(quiz_answers) = {len(quiz_answers)}")
-    for answer in quiz_answers:
-        print(f"answer.id = {answer.id}, answer.quiz_id = {answer.quiz_id}, answer.block_name = {answer.block_name}")
-        print(f"answer.question_no={answer.question_no}, answer.answer_score = {answer.answer_score}\n")
-    
+    url_block = {
+         "novice": "новачок", "advanced_beginner": "твердий початківець", "competent": "компетентний",
+         "proficient": "досвідчений", "expert": "експерт"
+    }
     quiz_answers_block = {}
     general_score = 0
     programmer_level = { 
@@ -115,12 +114,15 @@ def quiz_results():
         'description': 'Новачок (Novice). Новачки дуже переживають за свою успішність; їх досвіду замало, щоб повести їх у правильному напрямку і вони не знають чи їх вчинки будуть правильними. Новачки зазвичай не хочуть вчитися, зате хочуть досягти миттєвого результату. Вони не знають як реагувати на помилки і тому легко збиваються з пантелику, коли щось іде “не так”. Зате вони можуть бути досить ефективними, коли їм дати набір контекстно незалежних правил у формі “у випадку ХХХ, роби УУУ”. Іншими словами їм необхідний рецепт або алгоритм.'
     }
     for answer in quiz_answers:
-        block_name = answer.block_name
+        block_name = url_block[answer.block_name]
         if block_name not in quiz_answers_block:
             quiz_answers_block[block_name] = {'question_nos': [], 'answer_scores': []}
         general_score += answer.answer_score
         quiz_answers_block[block_name]['question_nos'].append(answer.question_no)
         quiz_answers_block[block_name]['answer_scores'].append(answer.answer_score)
+    quiz_block_score = {'block_names': list(quiz_answers_block.keys()), 'block_scores': []}
+    for block_name in quiz_block_score['block_names']:
+        quiz_block_score['block_scores'].append(sum(quiz_answers_block[block_name]['answer_scores']))  
 
     if (general_score > 16) and (general_score <= 32):
         programmer_level['level'] = 'Твердий початківець'
@@ -139,7 +141,8 @@ def quiz_results():
         programmer_level['description'] = 'Експерти – основне джерело знань та інформації в будь-якій сфері. Вони безперестану шукають все кращі і кращі методи роботи. Вони завжди застосовують весь свій велетенський багаж знань у правильному контексті. Вони пишуть книжки, статті та проводять семінари. Це сучасні чаклуни. Експерти керуються інтуїцією . Доктор Хаус, який з одного погляду на пацієнта (або взагалі на його медичну картку) міг поставити діагноз – типовий приклад експерта. Експерти працюють за допомогою несвідомого “порівняння з взірцем” (“pattern matching”) у базі свого досвіду. От тільки проблема в тому, що функція “порівняння з взірцем” асинхронна і знаходиться в частині мозку, яка не підконтрольна свідомості.'
     
     return render_template("quiz_results.html", quiz_answers_block_dict=quiz_answers_block, 
-                           general_score=general_score, programmer_level=programmer_level)
+                           general_score=general_score, programmer_level=programmer_level, 
+                           quiz_block_score=quiz_block_score)
 
 
 if __name__ == '__main__':

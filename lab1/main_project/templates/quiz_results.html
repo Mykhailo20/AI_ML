@@ -18,7 +18,7 @@
                 data: {
                     labels: {{ answer_dict["question_nos"] | safe }},
                     datasets: [{
-                        label: 'Scores',
+                        label: 'Оцінка обраної відповіді',
                         data: {{ answer_dict["answer_scores"] | safe }},
                         borderWidth: 1
                     }]
@@ -28,7 +28,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: '{{ block | capitalize }} Quiz Scores',
+                            text: 'Графік результатів анкетування блоку {{ block | capitalize() }}',
                             font: {
                                 family: 'Times',
                                 size: 20,
@@ -41,6 +41,37 @@
             });
         </script>
     {% endfor %}
+    <!-- Graph of generalized results -->
+    <canvas id="BlocksChart" class="chart-canvas" width="750" height="350"></canvas>
+    <script>
+        var ctx = document.getElementById("BlocksChart").getContext("2d");
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ quiz_block_score["block_names"] | safe }},
+                datasets: [{
+                    label: 'Оцінка блоку',
+                    data: {{ quiz_block_score["block_scores"] | safe }},
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Графік результатів повного анкетування',
+                        font: {
+                            family: 'Times',
+                            size: 20,
+                            style: 'normal',
+                            lineHeight: 1.2
+                        },
+                    }
+                }       
+            }
+        });
+    </script>
 </div>
 
 <style>

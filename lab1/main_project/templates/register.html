@@ -4,7 +4,7 @@
     <form method="POST" class="register-form">
         {{ form.hidden_tag() }}
         <div class="form-group">
-            {{ form.username.label }} {{ form.username(id="register-username") }}<br>
+            {{ form.username.label }} {{ form.username( id="register-username") }}<br>
         </div>
         <div class="form-group">
             {{ form.password.label }} {{ form.password(id="register-password") }}<br>
@@ -34,11 +34,11 @@
     }
 
     #register-username {
-        margin-left: 55px;
+        margin-left: 20px;
     }
 
     #register-password {
-        margin-left: 60px;
+        margin-left: 90px;
     }
 </style>
 {% endblock %}
