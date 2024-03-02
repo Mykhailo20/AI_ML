@@ -1,14 +1,43 @@
-.matrics-table, .matrics-th, .matrics-td {
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    margin: 0;
+}
+
+.data-form {
+    width: 50%;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.data-table, .data-table__th, .data-table__td {
     border: 1px solid;
     border-collapse: collapse;
-  }
-  
-  .matrics-th, .matrics-td {
+}
+
+.data-table {
+    margin-bottom: 25px;
+}
+
+.data-table__th, .data-table__td {
     min-width: 50px;
-    height: 20px;
+    height: 25px;
     text-align: center;
-  }
-  
-  .matrics-parameter {
-    background-color: rgb(204, 255, 255);
-  }
+}
+
+/* Style to make input field look like ordinary text */
+.data-table__td input[type="text"] {
+    border: none;
+    background: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    text-align: center;
+    max-width: 70px;
+}

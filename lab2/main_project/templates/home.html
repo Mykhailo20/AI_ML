@@ -1,53 +1,73 @@
+{% macro render_table(id) %}
+<table class="data-table" id="{{ id }}">
+    <tbody>
+        <tr>
+            <td class="data-table__td"><b>Введені значення</b></td>
+        </tr>
+    </tbody>
+</table>
+{% endmacro %}
+
 {% extends "base.html" %}
 {% block content %}
 <link rel="stylesheet" href="../static/css/home.css">
-<h1>Привіт, користувач</h1>
-<table>
-    <tr>
-        <th colspan={{ cols_no }} class="matrics-th">Матриця попарних порівнянь</th>
-    </tr>
+<h1>Головна сторінка</h1>
+<div class="form-container">
+    <form method="POST" class="data-form">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.parameter_name.label }} {{  form.parameter_name() }}<br>
+        </div>
+        <div class="form-group">
+            {{ form.parameter_value.label }} {{ form.parameter_value() }}<br>
+            <button type="button" id="add-parameter-value-btn" class="btn btn-primary">Додати</button>
+        </div>
+        <div>
+            {{ render_table('parameter-value-table') }}<br>
+        </div>
 
-    <tr>
-        {% for i in range(cols_no) %}
-        <td class="matrics-td"></td>
-        {% endfor %}
-    </tr>
+        <div class="form-group">
+            {{ form.expert_evaluation.label }} {{ form.expert_evaluation() }}<br>
+            <button type="button" id="add-expert-evaluation-btn" class="btn btn-primary">Додати</button>
+        </div>
+        <div>
+            {{ render_table('expert-evaluation-table') }}<br>
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
 
-    <tr>
-        <td class="matrics-td matrics-parameter">{{ fuzzy_set.parameter_name }}</td>
-        {% for param in fuzzy_set.parameter_values %}
-        <td class="matrics-td matrics-parameter">{{ param }}</td>
-        {% endfor %}
-    </tr>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('add-parameter-value-btn').addEventListener('click', function() {
+            var newValue = document.getElementById('parameter_value').value;
+            var tableRow = document.querySelector('#parameter-value-table tbody tr');
+            var newCell = document.createElement('td');
+            newCell.classList.add('data-table__td');
+            var newInput = document.createElement('input');
+            newInput.setAttribute('type', 'text');
+            newInput.setAttribute('name', 'parameter_value_td');
+            newInput.setAttribute('value', newValue);
+            newCell.appendChild(newInput);
+            tableRow.appendChild(newCell);
+        });
+    });
 
-    <!-- Matrix A -->
-    {% for i in range(fuzzy_set.n) %}
-    <tr>
-        <td class="matrics-td matrics-parameter">{{ fuzzy_set.parameter_values[i] }}</td>
-        {% for elem in fuzzy_set.A[i] %}
-        <td class="matrics-td">{{ elem|format_precision(precision) }}</td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-
-    <!-- Additional rows -->
-    <tr>
-        <td class="matrics-td">1</td>
-        {% for elem in fuzzy_set.column_sums %}
-        <td class="matrics-td">{{ elem|format_precision(precision) }}</td>
-        {% endfor %}
-    </tr>
-    <tr>
-        <td class="matrics-td">2</td>
-        {% for elem in fuzzy_set.inverted_sums %}
-        <td class="matrics-td">{{ elem|format_precision(precision) }}</td>
-        {% endfor %}
-    </tr>
-    <tr>
-        <td class="matrics-td">M(X)</td>
-        {% for elem in fuzzy_set.membership_function %}
-        <td class="matrics-td">{{ elem|format_precision(precision) }}</td>
-        {% endfor %}
-    </tr>
-</table>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('add-expert-evaluation-btn').addEventListener('click', function() {
+            var newValue = document.getElementById('expert_evaluation').value;
+            var tableRow = document.querySelector('#expert-evaluation-table tbody tr');
+            var newCell = document.createElement('td');
+            newCell.classList.add('data-table__td');
+            var newInput = document.createElement('input');
+            newInput.setAttribute('type', 'text');
+            newInput.setAttribute('name', 'expert_evaluation_td');
+            newInput.setAttribute('value', newValue);
+            newCell.appendChild(newInput);
+            tableRow.appendChild(newCell);
+        });
+    });
+</script>
 {% endblock %}
