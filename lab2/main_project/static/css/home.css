@@ -1,0 +1,14 @@
+.matrics-table, .matrics-th, .matrics-td {
+    border: 1px solid;
+    border-collapse: collapse;
+  }
+  
+  .matrics-th, .matrics-td {
+    min-width: 50px;
+    height: 20px;
+    text-align: center;
+  }
+  
+  .matrics-parameter {
+    background-color: rgb(204, 255, 255);
+  }

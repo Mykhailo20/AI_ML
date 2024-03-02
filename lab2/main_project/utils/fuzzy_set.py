@@ -1,8 +1,9 @@
 import numpy as np
-import display_data
+from main_project.utils.display_data import print_matrix
 
 class FuzzySet:
-    def __init__(self, parameter_values: list|tuple, expert_evaluations: list|tuple):
+    def __init__(self, parameter_name: str, parameter_values: list|tuple, expert_evaluations: list|tuple):
+        self.parameter_name = parameter_name
         self.parameter_values = parameter_values
         self.n = len(self.parameter_values)
         self.expert_evaluations = expert_evaluations
@@ -30,12 +31,13 @@ class FuzzySet:
 if __name__ == "__main__":
     parameter_values = np.array((170, 175, 180, 185, 190, 195))
     expert_evaluations = np.array((9, 7, 5, 3, 1))
-    fuzzy_set = FuzzySet(parameter_values, expert_evaluations)
+    fuzzy_set = FuzzySet('ріст', parameter_values, expert_evaluations)
 
+    print(f"fuzzy_set.parameter_name = {fuzzy_set.parameter_name}")
     print(f"fuzzy_set.parameter_values = {fuzzy_set.parameter_values}")
     print(f"fuzzy_set.expert_evaluations = {fuzzy_set.expert_evaluations}")
     print('\nfuzzy_set.A:')
-    display_data.print_matrix(fuzzy_set.A)
+    print_matrix(fuzzy_set.A)
     print(f"\nfuzzy_set.column_sums = {fuzzy_set.column_sums}")
     print(f"fuzzy_set.inverted_sums = {fuzzy_set.inverted_sums}")
     print(f"fuzzy_set.membership_function = {fuzzy_set.membership_function}")

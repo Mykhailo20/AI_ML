@@ -14,3 +14,6 @@ def print_matrix(matrix, precision=3):
         for i in range(row_el_no):
             print(f"{row[i]:.{precision}f}", end=", " if i != row_el_no - 1 else "")
         print("]")
+
+
+

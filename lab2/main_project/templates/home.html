@@ -1,4 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
+<link rel="stylesheet" href="../static/css/home.css">
 <h1>Привіт, користувач</h1>
+<table>
+    <tr>
+        <th colspan={{ cols_no }} class="matrics-th">Матриця попарних порівнянь</th>
+    </tr>
+
+    <tr>
+        {% for i in range(cols_no) %}
+        <td class="matrics-td"></td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <td class="matrics-td matrics-parameter">{{ fuzzy_set.parameter_name }}</td>
+        {% for param in fuzzy_set.parameter_values %}
+        <td class="matrics-td matrics-parameter">{{ param }}</td>
+        {% endfor %}
+    </tr>
+
+    <!-- Matrix A -->
+    {% for i in range(fuzzy_set.n) %}
+    <tr>
+        <td class="matrics-td matrics-parameter">{{ fuzzy_set.parameter_values[i] }}</td>
+        {% for elem in fuzzy_set.A[i] %}
+        <td class="matrics-td">{{ elem|format_precision(precision) }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+
+    <!-- Additional rows -->
+    <tr>
+        <td class="matrics-td">1</td>
+        {% for elem in fuzzy_set.column_sums %}
+        <td class="matrics-td">{{ elem|format_precision(precision) }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td class="matrics-td">2</td>
+        {% for elem in fuzzy_set.inverted_sums %}
+        <td class="matrics-td">{{ elem|format_precision(precision) }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td class="matrics-td">M(X)</td>
+        {% for elem in fuzzy_set.membership_function %}
+        <td class="matrics-td">{{ elem|format_precision(precision) }}</td>
+        {% endfor %}
+    </tr>
+</table>
 {% endblock %}
