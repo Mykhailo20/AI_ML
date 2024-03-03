@@ -4,9 +4,9 @@ from main_project.utils.display_data import print_matrix
 class FuzzySet:
     def __init__(self, parameter_name: str, parameter_values: list|tuple, expert_evaluations: list|tuple):
         self.parameter_name = parameter_name
-        self.parameter_values = parameter_values
+        self.parameter_values = np.array(parameter_values)
         self.n = len(self.parameter_values)
-        self.expert_evaluations = expert_evaluations
+        self.expert_evaluations = np.array(expert_evaluations)
         self.A = np.zeros(shape=[self.n, self.n], dtype='float32')
         self.__calc_A__()
         self.column_sums = self.A.sum(axis=0)

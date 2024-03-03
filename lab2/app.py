@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, request
+from flask import render_template, url_for, redirect, request, session
 import numpy as np
 from main_project import app
 from main_project.forms import *
@@ -11,19 +11,25 @@ def home():
         parameter_name = form.parameter_name.data
         parameter_values = request.form.getlist('parameter_value_td')
         expert_evaluations = request.form.getlist('expert_evaluation_td')
-        print(f"parameter_name = {parameter_name}")
-        print(f"parameter_values = {parameter_values}")
-        print(f"expert_evaluations = {expert_evaluations}")
+        parameter_values = [int(param) for param in parameter_values]
+        expert_evaluations = [int(eval) for eval in expert_evaluations]
+
+        fuzzy_set_dict = {
+            'parameter_name': parameter_name, 
+            'parameter_values': parameter_values, 
+            'expert_evaluations': expert_evaluations
+        }
+        session['fuzzy_set_dict'] = fuzzy_set_dict
         return redirect(url_for('result'))
     return render_template('home.html', form=form, max_parameter_values=6)
 
 
 @app.route('/result')
 def result():
-    parameter_values = np.array((170, 175, 180, 185, 190, 195))
-    expert_evaluations = np.array((9, 7, 5, 3, 1))
-    fuzzy_set = FuzzySet(parameter_name='ріст', parameter_values=parameter_values, expert_evaluations=expert_evaluations)
-    return render_template('result.html', fuzzy_set=fuzzy_set, cols_no=(len(fuzzy_set.parameter_values) + 1), precision=3)
+    if 'fuzzy_set_dict' in session:
+        fuzzy_set_dict = session['fuzzy_set_dict']
+        fuzzy_set = FuzzySet(fuzzy_set_dict['parameter_name'], fuzzy_set_dict['parameter_values'], fuzzy_set_dict['expert_evaluations'])
+        return render_template('result.html', fuzzy_set=fuzzy_set, cols_no=(len(fuzzy_set.parameter_values) + 1), precision=3)
 
 
 @app.route('/help')
