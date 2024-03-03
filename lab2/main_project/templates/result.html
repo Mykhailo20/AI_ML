@@ -90,7 +90,7 @@
                     x: {
                         title: {
                             display: true,
-                            text: '{{ fuzzy_set.parameter_name }}',
+                            text: "{{ fuzzy_set.parameter_name | safe }}",
                             font: {
                                 family: 'Arial',
                                 size: 14,
