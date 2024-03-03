@@ -11,3 +11,8 @@
 .nav-hr {
     margin: 5px 0px 15px;
 }
+
+.nav__left-items {
+    display: flex;
+    flex-direction: row;
+}
