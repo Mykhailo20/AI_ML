@@ -15,7 +15,7 @@ def home():
         print(f"parameter_values = {parameter_values}")
         print(f"expert_evaluations = {expert_evaluations}")
         return redirect(url_for('result'))
-    return render_template('home.html', form=form)
+    return render_template('home.html', form=form, max_parameter_values=6)
 
 
 @app.route('/result')

@@ -11,15 +11,17 @@
 {% extends "base.html" %}
 {% block content %}
 <link rel="stylesheet" href="../static/css/home.css">
-<h1>Головна сторінка</h1>
 <div class="form-container">
     <form method="POST" class="data-form">
         {{ form.hidden_tag() }}
         <div class="form-group">
-            {{ form.parameter_name.label }} {{  form.parameter_name() }}<br>
+            <h3>Вибір нечіткої множини та проведення оцінювання</h3>
         </div>
         <div class="form-group">
-            {{ form.parameter_value.label }} {{ form.parameter_value() }}<br>
+            {{ form.parameter_name.label }} {{  form.parameter_name(class="form-control") }}<br>
+        </div>
+        <div class="form-group">
+            {{ form.parameter_value.label }} {{ form.parameter_value(class="form-control") }}<br>
             <button type="button" id="add-parameter-value-btn" class="btn btn-primary">Додати</button>
         </div>
         <div>
@@ -27,15 +29,13 @@
         </div>
 
         <div class="form-group">
-            {{ form.expert_evaluation.label }} {{ form.expert_evaluation() }}<br>
+            {{ form.expert_evaluation.label }} {{ form.expert_evaluation(class="form-control") }}<br>
             <button type="button" id="add-expert-evaluation-btn" class="btn btn-primary">Додати</button>
         </div>
         <div>
             {{ render_table('expert-evaluation-table') }}<br>
         </div>
-        <div class="form-group">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
+        {{ form.submit(class="btn btn-primary") }}
     </form>
 </div>
 
@@ -52,6 +52,12 @@
             newInput.setAttribute('value', newValue);
             newCell.appendChild(newInput);
             tableRow.appendChild(newCell);
+
+            // Check if the number of inputs is max_parameter_values and disable the button if true
+            var inputsCount = document.querySelectorAll('#parameter-value-table input[name="parameter_value_td"]').length;
+            if (inputsCount >= {{ max_parameter_values }}) {
+                this.disabled = true; // Disable the button
+            }
         });
     });
 
@@ -67,6 +73,12 @@
             newInput.setAttribute('value', newValue);
             newCell.appendChild(newInput);
             tableRow.appendChild(newCell);
+
+            // Check if the number of inputs is max_parameter_values and disable the button if true
+            var inputsCount = document.querySelectorAll('#expert-evaluation-table input[name="expert_evaluation_td"]').length;
+            if (inputsCount >= {{ max_parameter_values - 1 }}) {
+                this.disabled = true; // Disable the button
+            }
         });
     });
 </script>
