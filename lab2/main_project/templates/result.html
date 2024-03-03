@@ -1,52 +1,118 @@
 {% extends "base.html" %}
 {% block content %}
+<link rel="stylesheet" href="../static/css/styles.css">
 <link rel="stylesheet" href="../static/css/result.css">
-<table>
-    <tr>
-        <th colspan={{ cols_no }} class="matrics-table__th">Матриця попарних порівнянь</th>
-    </tr>
+<div class="form-container">
+    <table>
+        <tr>
+            <th colspan={{ cols_no }} class="matrics-table__th">Матриця попарних порівнянь</th>
+        </tr>
+    
+        <tr>
+            {% for i in range(cols_no) %}
+            <td class="matrics-table__td"></td>
+            {% endfor %}
+        </tr>
+    
+        <tr>
+            <td class="matrics-table__td matrics-table__parameter">{{ fuzzy_set.parameter_name }}</td>
+            {% for param in fuzzy_set.parameter_values %}
+            <td class="matrics-table__td matrics-table__parameter">{{ param }}</td>
+            {% endfor %}
+        </tr>
+    
+        <!-- Matrix A -->
+        {% for i in range(fuzzy_set.n) %}
+        <tr>
+            <td class="matrics-table__td matrics-table__parameter">{{ fuzzy_set.parameter_values[i] }}</td>
+            {% for elem in fuzzy_set.A[i] %}
+            <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    
+        <!-- Additional rows -->
+        <tr>
+            <td class="matrics-table__td">1</td>
+            {% for elem in fuzzy_set.column_sums %}
+            <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td class="matrics-table__td">2</td>
+            {% for elem in fuzzy_set.inverted_sums %}
+            <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td class="matrics-table__td">M(X)</td>
+            {% for elem in fuzzy_set.membership_function %}
+            <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
+            {% endfor %}
+        </tr>
+    </table>
 
-    <tr>
-        {% for i in range(cols_no) %}
-        <td class="matrics-table__td"></td>
-        {% endfor %}
-    </tr>
+    <canvas id="FuzzySetChart" class="chart-canvas" width="750" height="350"></canvas>
+    <script>
+        var ctx = document.getElementById("FuzzySetChart").getContext("2d");
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ fuzzy_set.parameter_values | list | safe }},
+                datasets: [{
+                    data: {{ fuzzy_set.membership_function | list | safe }},
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Графік нечіткої множини',
+                        font: {
+                            family: 'Times',
+                            size: 20,
+                            style: 'normal',
+                            lineHeight: 1.2,
+                        },
+                        color: 'black',
+                    },
+                    legend: {
+                        display: false,
+                    },  
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '{{ fuzzy_set.parameter_name }}',
+                            font: {
+                                family: 'Arial',
+                                size: 16,
+                                style: 'normal',
+                                lineHeight: 1.2,
+                            },
+                            color: 'black',
+                        },
+                    },
+                    /*y: {
+                        title: {
+                            display: true,
+                            text: 'Значення функції належності',
+                            font: {
+                                family: 'Arial',
+                                size: 16,
+                                style: 'normal',
+                                lineHeight: 1.2,
+                            },
+                            color: 'black',
+                        },
+                    },*/
+                }     
+            }
+        });
+    </script>
+</div>
 
-    <tr>
-        <td class="matrics-table__td matrics-table__parameter">{{ fuzzy_set.parameter_name }}</td>
-        {% for param in fuzzy_set.parameter_values %}
-        <td class="matrics-table__td matrics-table__parameter">{{ param }}</td>
-        {% endfor %}
-    </tr>
-
-    <!-- Matrix A -->
-    {% for i in range(fuzzy_set.n) %}
-    <tr>
-        <td class="matrics-table__td matrics-table__parameter">{{ fuzzy_set.parameter_values[i] }}</td>
-        {% for elem in fuzzy_set.A[i] %}
-        <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-
-    <!-- Additional rows -->
-    <tr>
-        <td class="matrics-table__td">1</td>
-        {% for elem in fuzzy_set.column_sums %}
-        <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
-        {% endfor %}
-    </tr>
-    <tr>
-        <td class="matrics-table__td">2</td>
-        {% for elem in fuzzy_set.inverted_sums %}
-        <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
-        {% endfor %}
-    </tr>
-    <tr>
-        <td class="matrics-table__td">M(X)</td>
-        {% for elem in fuzzy_set.membership_function %}
-        <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
-        {% endfor %}
-    </tr>
-</table>
 {% endblock %}

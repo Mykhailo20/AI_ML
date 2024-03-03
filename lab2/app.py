@@ -1,5 +1,4 @@
 from flask import render_template, url_for, redirect, request, session
-import numpy as np
 from main_project import app
 from main_project.forms import *
 from main_project.utils.fuzzy_set import FuzzySet
