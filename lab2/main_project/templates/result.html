@@ -1,7 +1,11 @@
 {% extends "base.html" %}
-{% block content %}
+{% block header %}
 <link rel="stylesheet" href="../static/css/styles.css">
 <link rel="stylesheet" href="../static/css/result.css">
+<title>Lab2: Результати обчислень</title>
+{% endblock %}
+{% block content %}
+<h3 class="center-elem" id="h3-results">Результати обчислень</h3>
 <div class="form-container">
     <table>
         <tr>
@@ -89,7 +93,7 @@
                             text: '{{ fuzzy_set.parameter_name }}',
                             font: {
                                 family: 'Arial',
-                                size: 16,
+                                size: 14,
                                 style: 'normal',
                                 lineHeight: 1.2,
                             },

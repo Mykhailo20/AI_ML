@@ -9,9 +9,13 @@
 {% endmacro %}
 
 {% extends "base.html" %}
-{% block content %}
+{% block header %}
 <link rel="stylesheet" href="../static/css/styles.css">
 <link rel="stylesheet" href="../static/css/home.css">
+<title>Lab2: Ввід даних</title>
+{% endblock %}
+
+{% block content %}
 <div class="form-container">
     <form method="POST" class="data-form">
         {{ form.hidden_tag() }}

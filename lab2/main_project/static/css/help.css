@@ -1,0 +1,29 @@
+.additional-info-container {
+    max-width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.additional-info-container__faq {
+    margin-bottom: 20px;
+}
+
+.additional-info-container__faq__question {
+    font-weight: bold;
+    color: #333;
+}
+
+.additional-info-container__faq__answer {
+    margin-top: 5px;
+    color: #666;
+    text-align: justify;
+}
+
+.additional-info-container__faq__answer ul {
+    padding: 1px;
+    margin: 0;
+}
+
+.additional-info-container__faq__answer ul li {
+    margin-left: 1.1em;
+}

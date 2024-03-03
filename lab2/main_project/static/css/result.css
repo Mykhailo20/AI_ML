@@ -1,14 +1,18 @@
 .matrics-table, .matrics-table__th, .matrics-table__td {
-    border: 1px solid;
-    border-collapse: collapse;
+  border: 1px solid;
+  border-collapse: collapse;
 }
   
-  .matrics-table__th, .matrics-table__td {
-    min-width: 50px;
-    height: 25px;
-    text-align: center;
-  }
+.matrics-table__th, .matrics-table__td {
+  min-width: 50px;
+  height: 25px;
+  text-align: center;
+}
   
-  .matrics-table__parameter {
-    background-color: rgb(204, 255, 255);
-  }
+.matrics-table__parameter {
+  background-color: rgb(204, 255, 255);
+}
+
+#h3-results {
+  margin-bottom: 5vh;
+}

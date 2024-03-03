@@ -5,3 +5,12 @@
     /*height: 90vh;*/
     margin: 0;
 }
+
+.center-elem {
+    text-align: center;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+}
