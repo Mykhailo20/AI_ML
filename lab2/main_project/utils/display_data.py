@@ -17,6 +17,8 @@ def print_matrix(matrix, precision=3):
 
 
 def prepare_graph_data(parameter_values, membership_function):
+    parameter_values = [float(val) for val in parameter_values]
+    membership_function = [float(val) for val in membership_function]
     graph_dict = {}
     for i in range(len(parameter_values)):
         par_value = parameter_values[i]

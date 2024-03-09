@@ -29,3 +29,7 @@
   text-align: center;
   max-width: 70px;
 }
+
+#parameter_name_td_input {
+  min-width: 125px;
+}

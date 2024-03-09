@@ -7,50 +7,59 @@
 {% block content %}
 <h3 class="center-elem" id="h3-results">Результати обчислень</h3>
 <div class="form-container">
-    <table>
-        <tr>
+    <table class="matrics-table">
+        <tr class="matrics-table__row">
             <th colspan={{ cols_no }} class="matrics-table__th">Матриця попарних порівнянь</th>
         </tr>
     
-        <tr>
+        <tr class="matrics-table__row">
             {% for i in range(cols_no) %}
             <td class="matrics-table__td"></td>
             {% endfor %}
         </tr>
-    
-        <tr>
-            <td class="matrics-table__td matrics-table__parameter">{{ fuzzy_set.parameter_name }}</td>
+        
+        <!-- Parameter values -->
+        <tr class="matrics-table__row">
+            <td class="matrics-table__td matrics-table__parameter">
+                <input type="text" name="parameter_name_td_input" id="parameter_name_td_input" value="{{ fuzzy_set.parameter_name }}">
+            </td>
             {% for param in fuzzy_set.parameter_values %}
             <td class="matrics-table__td matrics-table__parameter">
-                <input type="text" name="parameter_value_td" value="{{ param }}">
+                <input type="text" name="parameter_value_td_input" value="{{ param }}">
             </td>
             {% endfor %}
         </tr>
     
         <!-- Matrix A -->
         {% for i in range(fuzzy_set.n) %}
-        <tr>
+        <tr class="matrics-table__row">
             <td class="matrics-table__td matrics-table__parameter">{{ fuzzy_set.parameter_values[i] }}</td>
             {% for elem in fuzzy_set.A[i] %}
-            <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
+            <td class="matrics-table__td">
+                {% if i != (fuzzy_set.n - 1) %}
+                    {{ elem|format_precision(precision) }}
+                {% else %}
+                    <input type="text" name="expert_evaluation_td_input" value="{{ elem|format_precision(precision) }}">
+                {% endif %}
+            </td>
             {% endfor %}
         </tr>
         {% endfor %}
     
         <!-- Additional rows -->
-        <tr>
+        <tr class="matrics-table__row">
             <td class="matrics-table__td">1</td>
             {% for elem in fuzzy_set.column_sums %}
             <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
             {% endfor %}
         </tr>
-        <tr>
+        <tr class="matrics-table__row">
             <td class="matrics-table__td">2</td>
             {% for elem in fuzzy_set.inverted_sums %}
             <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
             {% endfor %}
         </tr>
-        <tr>
+        <tr class="matrics-table__row">
             <td class="matrics-table__td">M(X)</td>
             {% for elem in fuzzy_set.membership_function %}
             <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
@@ -119,21 +128,41 @@
             }
         });
     </script>
-
+    
     <script>
         // Function to handle the Enter key press event
         function handleEnter(event) {
             if (event.key === 'Enter') {
+                console.log("Enter btn was clicked!");
+
+                // Get the updated parameter name
+                var parameterName = document.querySelector('input[name="parameter_name_td_input"]').value;
+
                 // Get the updated parameter values
                 var parameterValues = [];
-                console.log("Enter btn was clicked!");
-                var inputFields = document.querySelectorAll('input[name="parameter_value_td"]');
-                inputFields.forEach(function(input) {
+                var parValInputFields = document.querySelectorAll('input[name="parameter_value_td_input"]');
+                parValInputFields.forEach(function(input) {
                     parameterValues.push(input.value);
                 });
-                
+
+                // Get the updated expert evaluations
+                var expertEvaluations = [];
+                var expEvalInputFields = document.querySelectorAll('input[name="expert_evaluation_td_input"]')
+                expEvalInputFields.forEach(function(input){
+                    expertEvaluations.push(input.value);
+                });
+
+                console.log("Parameter name = " + parameterName);
                 console.log("Parameter values = " + parameterValues);
-                // Send the updated parameter values to the server
+                console.log("Expert evaluations = " + expertEvaluations);
+
+                var data = {
+                    'parameter_name': parameterName,
+                    'parameter_values': parameterValues,
+                    'expert_evaluations': expertEvaluations
+                };
+
+                // Send the updated parameter values and expert evaluations to the server
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '/update_parameters', true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
@@ -145,12 +174,14 @@
                             var response = JSON.parse(xhr.responseText);
 
                             // Update the input values with the new parameter values
-                            var parameterValues = response.parameter_values;
-                            var inputFields = document.querySelectorAll('input[name="parameter_value_td"]');
+                            var fuzzySet = JSON.parse(response.fuzzy_set);
+                            var parameterValues = fuzzySet.parameter_values;
+
+                            var inputFields = document.querySelectorAll('input[name="parameter_value_td_input"]');
                             for (var i = 0; i < parameterValues.length; i++) {
                                 inputFields[i].value = parameterValues[i];
                             }
-
+                            
                             var existingChart = Chart.getChart("FuzzySetChart");
                             if (existingChart) {
                                 existingChart.destroy();
@@ -208,15 +239,24 @@
                         }
                     }
                 };
-                xhr.send(JSON.stringify(parameterValues));
+                xhr.send(JSON.stringify(data));
             }
         }
     
-        // Add event listeners to the input fields for the parameter values
-        var inputFields = document.querySelectorAll('input[name="parameter_value_td"]');
-        inputFields.forEach(function(input) {
+        // Add event listeners to the input fields for the parameter name, parameter values and expert evaluations
+
+        document.querySelector('input[name="parameter_name_td_input"]').addEventListener('keypress', handleEnter);
+
+        var parValInputFields = document.querySelectorAll('input[name="parameter_value_td_input"]');
+        parValInputFields.forEach(function(input) {
             input.addEventListener('keypress', handleEnter);
         });
+
+        var expEvalInputFields = document.querySelectorAll('input[name="expert_evaluation_td_input"]');
+        expEvalInputFields.forEach(function(input){
+            input.addEventListener('keypress', handleEnter);
+        });
+
     </script>
 </div>
 
