@@ -128,7 +128,7 @@
             }
         });
     </script>
-    
+    <script src="../static/js/render_table.js"></script>
     <script>
         // Function to handle the Enter key press event
         function handleEnter(event) {
@@ -152,10 +152,6 @@
                     expertEvaluations.push(input.value);
                 });
 
-                console.log("Parameter name = " + parameterName);
-                console.log("Parameter values = " + parameterValues);
-                console.log("Expert evaluations = " + expertEvaluations);
-
                 var data = {
                     'parameter_name': parameterName,
                     'parameter_values': parameterValues,
@@ -177,17 +173,28 @@
                             var fuzzySet = JSON.parse(response.fuzzy_set);
                             var parameterValues = fuzzySet.parameter_values;
 
-                            var inputFields = document.querySelectorAll('input[name="parameter_value_td_input"]');
-                            for (var i = 0; i < parameterValues.length; i++) {
-                                inputFields[i].value = parameterValues[i];
-                            }
+                            // Render the table
+                            renderTable(fuzzySet, {{ precision | safe }})
+
+                            // Add eventListeners
+                            document.querySelector('input[name="parameter_name_td_input"]').addEventListener('keypress', handleEnter);
+
+                            var parValInputFields = document.querySelectorAll('input[name="parameter_value_td_input"]');
+                            parValInputFields.forEach(function(input) {
+                                input.addEventListener('keypress', handleEnter);
+                            });
+
+                            var expEvalInputFields = document.querySelectorAll('input[name="expert_evaluation_td_input"]');
+                            expEvalInputFields.forEach(function(input){
+                                input.addEventListener('keypress', handleEnter);
+                            });
                             
+                            // Redraw the graph with the new data
                             var existingChart = Chart.getChart("FuzzySetChart");
                             if (existingChart) {
                                 existingChart.destroy();
                             }
 
-                            // Redraw the graph with the new data
                             var ctx = document.getElementById("FuzzySetChart").getContext("2d");
                             var chart = new Chart(ctx, {
                                 type: 'line',

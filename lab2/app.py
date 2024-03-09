@@ -42,11 +42,6 @@ def result():
 @app.route('/update_parameters', methods=['POST'])
 def update_parameters():
     fuzzy_set_dict = request.json
-
-    print(f"updated_parameter_name = {fuzzy_set_dict['parameter_name']}")
-    print(f"updated_parameter_values = {fuzzy_set_dict['parameter_values']}")
-    print(f"updated_expert_evaluations = {fuzzy_set_dict['expert_evaluations']}")
-
     session['fuzzy_set_dict'] = fuzzy_set_dict
 
     fuzzy_set = FuzzySet(fuzzy_set_dict['parameter_name'], fuzzy_set_dict['parameter_values'], fuzzy_set_dict['expert_evaluations'])
