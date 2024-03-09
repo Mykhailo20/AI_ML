@@ -20,7 +20,7 @@
     <form method="POST" class="data-form">
         {{ form.hidden_tag() }}
         <div class="form-group">
-            <h3>Вибір нечіткої множини та проведення оцінювання</h3>
+            <h3>Побудова нечіткої множини та проведення оцінювання</h3>
         </div>
         <div class="form-group">
             {{ form.parameter_name.label }} {{  form.parameter_name(class="form-control") }}<br>
@@ -81,7 +81,7 @@
 
             // Check if the number of inputs is max_parameter_values and disable the button if true
             var inputsCount = document.querySelectorAll('#expert-evaluation-table input[name="expert_evaluation_td"]').length;
-            if (inputsCount >= {{ max_parameter_values - 1 }}) {
+            if (inputsCount >= {{ max_parameter_values }}) {
                 this.disabled = true;
             }
         });

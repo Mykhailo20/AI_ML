@@ -62,9 +62,9 @@
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: {{ fuzzy_set.parameter_values | list | safe }},
+                labels: {{ x_axis | list | safe }},
                 datasets: [{
-                    data: {{ fuzzy_set.membership_function | list | safe }},
+                    data: {{ y_axis | list | safe }},
                     borderWidth: 1,
                 }]
             },

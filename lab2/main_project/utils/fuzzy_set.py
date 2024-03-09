@@ -14,7 +14,10 @@ class FuzzySet:
         self.membership_function = self.inverted_sums / max(self.inverted_sums)
         
     def __calc_A__(self):
-        self.A[self.n - 1] = np.append(self.expert_evaluations, np.ones(1, dtype='float32'))
+        if len(self.expert_evaluations) == len(self.parameter_values) - 1:
+            self.A[self.n - 1] = np.append(self.expert_evaluations, np.ones(1, dtype='float32'))
+        else:
+            self.A[self.n - 1] = self.expert_evaluations
         i = self.n - 2
         while i >= 0:
             k = i + 1
