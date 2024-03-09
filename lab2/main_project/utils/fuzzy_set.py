@@ -8,12 +8,12 @@ class FuzzySet:
         self.n = len(self.parameter_values)
         self.expert_evaluations = np.array(expert_evaluations)
         self.A = np.zeros(shape=[self.n, self.n], dtype='float32')
-        self.__calc_A__()
+        self.__calc_A()
         self.column_sums = self.A.sum(axis=0)
         self.inverted_sums = 1.0 / self.column_sums
         self.membership_function = self.inverted_sums / max(self.inverted_sums)
         
-    def __calc_A__(self):
+    def __calc_A(self):
         if len(self.expert_evaluations) == len(self.parameter_values) - 1:
             self.A[self.n - 1] = np.append(self.expert_evaluations, np.ones(1, dtype='float32'))
         else:

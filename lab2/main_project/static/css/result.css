@@ -16,3 +16,16 @@
 #h3-results {
   margin-bottom: 5vh;
 }
+
+/* Style to make input field look like ordinary text */
+.matrics-table__td input[type="text"] {
+  border: none;
+  background: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: center;
+  max-width: 70px;
+}

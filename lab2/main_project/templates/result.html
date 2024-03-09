@@ -21,7 +21,9 @@
         <tr>
             <td class="matrics-table__td matrics-table__parameter">{{ fuzzy_set.parameter_name }}</td>
             {% for param in fuzzy_set.parameter_values %}
-            <td class="matrics-table__td matrics-table__parameter">{{ param }}</td>
+            <td class="matrics-table__td matrics-table__parameter">
+                <input type="text" name="parameter_value_td" value="{{ param }}">
+            </td>
             {% endfor %}
         </tr>
     
@@ -115,6 +117,105 @@
                     },*/
                 }     
             }
+        });
+    </script>
+
+    <script>
+        // Function to handle the Enter key press event
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                // Get the updated parameter values
+                var parameterValues = [];
+                console.log("Enter btn was clicked!");
+                var inputFields = document.querySelectorAll('input[name="parameter_value_td"]');
+                inputFields.forEach(function(input) {
+                    parameterValues.push(input.value);
+                });
+                
+                console.log("Parameter values = " + parameterValues);
+                // Send the updated parameter values to the server
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/update_parameters', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Handle the response from the server (update the matrix and graph)
+                            console.log('Get data from Flask server: ' + xhr.responseText);
+                            var response = JSON.parse(xhr.responseText);
+
+                            // Update the input values with the new parameter values
+                            var parameterValues = response.parameter_values;
+                            var inputFields = document.querySelectorAll('input[name="parameter_value_td"]');
+                            for (var i = 0; i < parameterValues.length; i++) {
+                                inputFields[i].value = parameterValues[i];
+                            }
+
+                            var existingChart = Chart.getChart("FuzzySetChart");
+                            if (existingChart) {
+                                existingChart.destroy();
+                            }
+
+                            // Redraw the graph with the new data
+                            var ctx = document.getElementById("FuzzySetChart").getContext("2d");
+                            var chart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: response.graph_data.x_axis,
+                                    datasets: [{
+                                        data: response.graph_data.y_axis,
+                                        borderWidth: 1,
+                                    }]
+                                },
+                                options: {
+                                    responsive: false,
+                                    plugins: {
+                                        title: {
+                                            display: true,
+                                            text: 'Графік нечіткої множини',
+                                            font: {
+                                                family: 'Times',
+                                                size: 20,
+                                                style: 'normal',
+                                                lineHeight: 1.2,
+                                            },
+                                            color: 'black',
+                                        },
+                                        legend: {
+                                            display: false,
+                                        },  
+                                    },
+                                    scales: {
+                                        x: {
+                                            title: {
+                                                display: true,
+                                                text: response.parameter_name,
+                                                font: {
+                                                    family: 'Arial',
+                                                    size: 14,
+                                                    style: 'normal',
+                                                    lineHeight: 1.2,
+                                                },
+                                                color: 'black',
+                                            },
+                                        },
+                                    }     
+                                }
+                            });
+                        } else {
+                            // Handle errors
+                            console.error('Failed to update parameters:', xhr.status);
+                        }
+                    }
+                };
+                xhr.send(JSON.stringify(parameterValues));
+            }
+        }
+    
+        // Add event listeners to the input fields for the parameter values
+        var inputFields = document.querySelectorAll('input[name="parameter_value_td"]');
+        inputFields.forEach(function(input) {
+            input.addEventListener('keypress', handleEnter);
         });
     </script>
 </div>

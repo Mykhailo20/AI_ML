@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, request, session
+from flask import render_template, url_for, redirect, request, jsonify, session
 from main_project import app
 from main_project.forms import *
 from main_project.utils.fuzzy_set import FuzzySet
@@ -35,6 +35,29 @@ def result():
         return render_template('result.html', fuzzy_set=fuzzy_set, cols_no=(len(fuzzy_set.parameter_values) + 1), precision=3,
                                x_axis=graph_dict.keys(), y_axis=graph_dict.values())
 
+
+@app.route('/update_parameters', methods=['POST'])
+def update_parameters():
+    updated_parameter_values = request.json
+    print(f"updated_parameter_values = {updated_parameter_values}")
+
+    if 'fuzzy_set_dict' in session:
+        fuzzy_set_dict = session['fuzzy_set_dict']
+        fuzzy_set = FuzzySet(fuzzy_set_dict['parameter_name'], updated_parameter_values, fuzzy_set_dict['expert_evaluations'])
+        graph_dict = prepare_graph_data(fuzzy_set.parameter_values, fuzzy_set.membership_function)
+        print(f"fuzzy_set.parameter_values = {fuzzy_set.parameter_values}")
+        # Convert parameter values and graph data to JSON-serializable types
+        parameter_values = [float(val) for val in fuzzy_set.parameter_values]
+        graph_data = {
+            'x_axis': list(map(float, graph_dict.keys())),
+            'y_axis': list(map(float, graph_dict.values()))
+        }
+
+        # Return JSON data containing the updated parameter values and graph data
+        return jsonify({
+            'parameter_values': parameter_values,
+            'graph_data': graph_data
+        })
 
 @app.route('/help')
 def help():
