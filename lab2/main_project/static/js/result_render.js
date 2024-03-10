@@ -11,14 +11,13 @@ function renderTable(fuzzySet, precision) {
         container.appendChild(table);
     }
 
-    // Clear the existing table content
-    table.innerHTML = '';
+    var tableInnerHTMLStr = '';
 
     // Define the number of columns
     var colsNo = fuzzySet.parameter_values.length + 1;
 
     // Create and append the table header
-    table.innerHTML += '<tr class="matrics-table__row">'
+    tableInnerHTMLStr += '<tr class="matrics-table__row">'
                        + '<th colspan=' + colsNo + ' class="matrics-table__th">Матриця попарних порівнянь</th>'
                        + '</tr>'
 
@@ -27,7 +26,7 @@ function renderTable(fuzzySet, precision) {
     for(var i = 0; i < colsNo; i++){
         emptyRowStr += '<td class="matrics-table__td"></td>'
     }
-    table.innerHTML += emptyRowStr;
+    tableInnerHTMLStr += emptyRowStr;
 
     // Parameter values
     var parameterValuesStr = '<tr class="matrics-table__row">';
@@ -41,7 +40,7 @@ function renderTable(fuzzySet, precision) {
                               + '</td>';
     });
     parameterValuesStr += '</tr>';
-    table.innerHTML += parameterValuesStr;
+    tableInnerHTMLStr += parameterValuesStr;
 
     // Matrix A
     var matrixAStr = '';
@@ -65,7 +64,7 @@ function renderTable(fuzzySet, precision) {
         matrixAStr += matrixARowStr;
         matrixAStr += '</tr>';
     }
-    table.innerHTML += matrixAStr;
+    tableInnerHTMLStr += matrixAStr;
 
     // Additional rows
     var columnSumsStr = '<tr class="matrics-table__row">';
@@ -76,7 +75,7 @@ function renderTable(fuzzySet, precision) {
         columnSumsStr += '</td>';
     });
     columnSumsStr += '</tr>';
-    table.innerHTML += columnSumsStr;
+    tableInnerHTMLStr += columnSumsStr;
 
     var columInvertedSumsStr = '<tr class="matrics-table__row">';
     columInvertedSumsStr += '<td class="matrics-table__td">2</td>'
@@ -86,7 +85,7 @@ function renderTable(fuzzySet, precision) {
         columInvertedSumsStr += '</td>'
     })
     columInvertedSumsStr += '</tr>'
-    table.innerHTML += columInvertedSumsStr;
+    tableInnerHTMLStr += columInvertedSumsStr;
 
     var columnMembFuncStr = '<tr class="matrics-table__row">'
     columnMembFuncStr += '<td class="matrics-table__td">M(X)</td>'
@@ -96,5 +95,89 @@ function renderTable(fuzzySet, precision) {
         columnMembFuncStr += '</td>'
     })
     columnMembFuncStr += '</tr>'
-    table.innerHTML += columnMembFuncStr;
+    tableInnerHTMLStr += columnMembFuncStr;
+    table.innerHTML = tableInnerHTMLStr;
+}
+
+function renderGraph(xAxis, yAxis, title, xAxisTitle, yAxisTitle) {
+    var canvas = document.getElementById("FuzzySetChart");
+
+    // If the canvas doesn't exist, create it
+    if (!canvas) {
+        canvas = document.createElement("canvas");
+        canvas.id = "FuzzySetChart";
+        canvas.classList.add("chart-canvas");
+        canvas.width = 750;
+        canvas.height = 350;
+
+        // Append the canvas to its container element
+        var container = document.querySelector('.form-container');
+        container.appendChild(canvas);
+    }
+
+    var ctx = canvas.getContext("2d");
+    var options = {
+        responsive: false,
+        plugins: {
+            title: {
+                display: true,
+                text: title || 'Графік нечіткої множини',
+                font: {
+                    family: 'Times',
+                    size: 20,
+                    style: 'normal',
+                    lineHeight: 1.2,
+                },
+                color: 'black',
+            },
+            legend: {
+                display: false,
+            },  
+        },
+        scales: {}
+    };
+
+    if (xAxisTitle) {
+        options.scales.x = {
+            title: {
+                display: true,
+                text: xAxisTitle,
+                font: {
+                    family: 'Arial',
+                    size: 14,
+                    style: 'normal',
+                    lineHeight: 1.2,
+                },
+                color: 'black',
+            },
+        };
+    }
+
+    if (yAxisTitle) {
+        options.scales.y = {
+            title: {
+                display: true,
+                text: yAxisTitle,
+                font: {
+                    family: 'Arial',
+                    size: 14,
+                    style: 'normal',
+                    lineHeight: 1.2,
+                },
+                color: 'black',
+            },
+        };
+    }
+
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xAxis,
+            datasets: [{
+                data: yAxis,
+                borderWidth: 1,
+            }]
+        },
+        options: options
+    });
 }
