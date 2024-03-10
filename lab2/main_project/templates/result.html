@@ -11,6 +11,14 @@
     <script src="../static/js/result_render.js"></script>
     <script src="../static/js/result_operations.js"></script>
     <script>
+        // Change the flex direction property
+        var formContainer = document.querySelector('.form-container');
+        if({{ fuzzy_set.parameter_values|length }} >= 10){
+            formContainer.style.flexDirection = 'column';
+        } else {
+            formContainer.style.flexDirection = 'row';
+        }
+
         // Initial rendering of the table and graph
         renderTable({{ fuzzy_set_json | safe }}, {{ precision | safe }});
 

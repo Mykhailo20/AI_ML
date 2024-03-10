@@ -44,46 +44,19 @@
     </form>
 </div>
 
+<script src="../static/js/home.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        var maxRowCells = {{ max_row_cells }}
+        var maxParameterValues = {{ max_parameter_values }}
         document.getElementById('add-parameter-value-btn').addEventListener('click', function() {
             var newValue = document.getElementById('parameter_value').value;
-            var tableRow = document.querySelector('#parameter-value-table tbody tr');
-            var newCell = document.createElement('td');
-            newCell.classList.add('data-table__td');
-            var newInput = document.createElement('input');
-            newInput.setAttribute('type', 'text');
-            newInput.setAttribute('name', 'parameter_value_td');
-            newInput.setAttribute('value', newValue);
-            newCell.appendChild(newInput);
-            tableRow.appendChild(newCell);
-
-            // Check if the number of inputs is max_parameter_values and disable the button if true
-            var inputsCount = document.querySelectorAll('#parameter-value-table input[name="parameter_value_td"]').length;
-            if (inputsCount >= {{ max_parameter_values }}) {
-                this.disabled = true;
-            }
+            addNewRow('parameter-value-table', 'parameter_value', newValue, maxRowCells, maxParameterValues);
         });
-    });
 
-    document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('add-expert-evaluation-btn').addEventListener('click', function() {
             var newValue = document.getElementById('expert_evaluation').value;
-            var tableRow = document.querySelector('#expert-evaluation-table tbody tr');
-            var newCell = document.createElement('td');
-            newCell.classList.add('data-table__td');
-            var newInput = document.createElement('input');
-            newInput.setAttribute('type', 'text');
-            newInput.setAttribute('name', 'expert_evaluation_td');
-            newInput.setAttribute('value', newValue);
-            newCell.appendChild(newInput);
-            tableRow.appendChild(newCell);
-
-            // Check if the number of inputs is max_parameter_values and disable the button if true
-            var inputsCount = document.querySelectorAll('#expert-evaluation-table input[name="expert_evaluation_td"]').length;
-            if (inputsCount >= {{ max_parameter_values }}) {
-                this.disabled = true;
-            }
+            addNewRow('expert-evaluation-table', 'expert_evaluation', newValue, maxRowCells, maxParameterValues);
         });
     });
 </script>

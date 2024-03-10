@@ -8,6 +8,10 @@
   height: 25px;
   text-align: center;
 }
+
+.matrics-table, .chart-canvas {
+  margin-bottom: 1%;
+}
   
 .matrics-table__parameter {
   background-color: rgb(204, 255, 255);

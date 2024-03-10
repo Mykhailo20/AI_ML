@@ -1,7 +1,7 @@
 from flask import render_template, url_for, redirect, request, jsonify, session
 import json
 
-from main_project import app, PRECISION
+from main_project import app, PRECISION, MAX_PARAMETER_VALUES, MAX_ROW_CELLS
 from main_project.forms import *
 from main_project.utils.fuzzy_set import *
 from main_project.utils.display_data import prepare_graph_data
@@ -25,7 +25,7 @@ def home():
 
         session['fuzzy_set_dict'] = fuzzy_set_dict
         return redirect(url_for('result'))
-    return render_template('home.html', form=form, max_parameter_values=6)
+    return render_template('home.html', form=form, max_parameter_values=MAX_PARAMETER_VALUES, max_row_cells=MAX_ROW_CELLS)
 
 
 @app.route('/result')
@@ -36,7 +36,7 @@ def result():
 
         graph_dict = prepare_graph_data(fuzzy_set.parameter_values, fuzzy_set.membership_function)
         return render_template('result.html', fuzzy_set=fuzzy_set, fuzzy_set_json=json.dumps(fuzzy_set, cls=FuzzySetEncoder), 
-                               cols_no=(len(fuzzy_set.parameter_values) + 1), precision=PRECISION, 
+                               cols_no=(len(fuzzy_set.parameter_values) + 1), precision=PRECISION,
                                x_axis=graph_dict.keys(), y_axis=graph_dict.values())
 
 

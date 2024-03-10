@@ -1,5 +1,6 @@
 .data-form {
-    width: 50%;
+    /*width: 60%; - for 10 elements*/
+    width: 55%;
     margin: 0 auto;
     border: 1px solid #ccc;
     padding: 20px;
