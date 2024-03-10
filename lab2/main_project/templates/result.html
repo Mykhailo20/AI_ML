@@ -4,134 +4,22 @@
 <link rel="stylesheet" href="../static/css/result.css">
 <title>Lab2: Результати обчислень</title>
 {% endblock %}
+
 {% block content %}
 <h3 class="center-elem" id="h3-results">Результати обчислень</h3>
 <div class="form-container">
-    <table class="matrics-table">
-        <tr class="matrics-table__row">
-            <th colspan={{ cols_no }} class="matrics-table__th">Матриця попарних порівнянь</th>
-        </tr>
-    
-        <tr class="matrics-table__row">
-            {% for i in range(cols_no) %}
-            <td class="matrics-table__td"></td>
-            {% endfor %}
-        </tr>
-        
-        <!-- Parameter values -->
-        <tr class="matrics-table__row">
-            <td class="matrics-table__td matrics-table__parameter">
-                <input type="text" name="parameter_name_td_input" id="parameter_name_td_input" value="{{ fuzzy_set.parameter_name }}">
-            </td>
-            {% for param in fuzzy_set.parameter_values %}
-            <td class="matrics-table__td matrics-table__parameter">
-                <input type="text" name="parameter_value_td_input" value="{{ param }}">
-            </td>
-            {% endfor %}
-        </tr>
-    
-        <!-- Matrix A -->
-        {% for i in range(fuzzy_set.n) %}
-        <tr class="matrics-table__row">
-            <td class="matrics-table__td matrics-table__parameter">{{ fuzzy_set.parameter_values[i] }}</td>
-            {% for elem in fuzzy_set.A[i] %}
-            <td class="matrics-table__td">
-                {% if i != (fuzzy_set.n - 1) %}
-                    {{ elem|format_precision(precision) }}
-                {% else %}
-                    <input type="text" name="expert_evaluation_td_input" value="{{ elem|format_precision(precision) }}">
-                {% endif %}
-            </td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    
-        <!-- Additional rows -->
-        <tr class="matrics-table__row">
-            <td class="matrics-table__td">1</td>
-            {% for elem in fuzzy_set.column_sums %}
-            <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
-            {% endfor %}
-        </tr>
-        <tr class="matrics-table__row">
-            <td class="matrics-table__td">2</td>
-            {% for elem in fuzzy_set.inverted_sums %}
-            <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
-            {% endfor %}
-        </tr>
-        <tr class="matrics-table__row">
-            <td class="matrics-table__td">M(X)</td>
-            {% for elem in fuzzy_set.membership_function %}
-            <td class="matrics-table__td">{{ elem|format_precision(precision) }}</td>
-            {% endfor %}
-        </tr>
-    </table>
-
-    <canvas id="FuzzySetChart" class="chart-canvas" width="750" height="350"></canvas>
     <script src="../static/js/result_render.js"></script>
     <script src="../static/js/result_operations.js"></script>
     <script>
-        // Render Graph for the first time
-        xAxis = {{ x_axis | list | safe }};
-        yAxis = {{ y_axis | list | safe }};
-        xAxisTitle = "{{ fuzzy_set.parameter_name | safe }}";
+        // Initial rendering of the table and graph
+        renderTable({{ fuzzy_set_json | safe }}, {{ precision | safe }});
+
+        var xAxis = {{ x_axis | list | safe }};
+        var yAxis = {{ y_axis | list | safe }};
+        var xAxisTitle = "{{ fuzzy_set.parameter_name | safe }}";
         renderGraph(xAxis, yAxis, 'Графік нечіткої множини', xAxisTitle);
 
-        // Function to handle the Enter key press event
-        function handleEnter(event) {
-            if (event.key === 'Enter') {
-                console.log("Enter btn was clicked!");
-
-                // Get the updated fuzzySet values
-                var elements = {
-                    'parameter_name': 'input[name="parameter_name_td_input"]',
-                    'parameter_values': 'input[name="parameter_value_td_input"]',
-                    'expert_evaluations': 'input[name="expert_evaluation_td_input"]'
-                };
-                var data = getFuzzySetValues(elements);
-
-                // Send the updated parameter name, parameter values and expert evaluations to the server
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/update_parameters', true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            // Handle the response from the server (update the matrix and graph)
-                            var response = JSON.parse(xhr.responseText);
-
-                            // Update the input values with the new parameter values
-                            var fuzzySet = JSON.parse(response.fuzzy_set);
-
-                            // Render the table
-                            renderTable(fuzzySet, {{ precision | safe }})
-                            
-                            // Add eventListeners
-                            var elements = {
-                                'parameter_name': 'input[name="parameter_name_td_input"]',
-                                'parameter_values': 'input[name="parameter_value_td_input"]',
-                                'expert_evaluations': 'input[name="expert_evaluation_td_input"]'
-                            };
-                            addEventListeners(elements, 'keypress', handleEnter);
-                            
-                            // Redraw the graph with the new data
-                            var existingChart = Chart.getChart("FuzzySetChart");
-                            if (existingChart) {
-                                existingChart.destroy();
-                            }
-
-                            renderGraph(response.graph_data.x_axis, response.graph_data.y_axis, 'Графік нечіткої множини', fuzzySet.parameter_name);
-                        } else {
-                            // Handle errors
-                            console.error('Failed to update parameters:', xhr.status);
-                        }
-                    }
-                };
-                xhr.send(JSON.stringify(data));
-            }
-        }
-        
-        // Add event listeners to the input fields for the parameter name, parameter values and expert evaluations
+        // Add event listeners to the input fields for the parameter name, parameter values, and expert evaluations
         var elements = {
             'parameter_name': 'input[name="parameter_name_td_input"]',
             'parameter_values': 'input[name="parameter_value_td_input"]',
@@ -140,5 +28,4 @@
         addEventListeners(elements, 'keypress', handleEnter);
     </script>
 </div>
-
 {% endblock %}

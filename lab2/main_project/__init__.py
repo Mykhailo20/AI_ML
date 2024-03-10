@@ -7,3 +7,4 @@ def format_precision(value, precision):
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_secret_key'
 app.jinja_env.filters['format_precision'] = format_precision
+PRECISION = 3

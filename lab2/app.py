@@ -1,7 +1,7 @@
 from flask import render_template, url_for, redirect, request, jsonify, session
 import json
 
-from main_project import app
+from main_project import app, PRECISION
 from main_project.forms import *
 from main_project.utils.fuzzy_set import *
 from main_project.utils.display_data import prepare_graph_data
@@ -33,9 +33,10 @@ def result():
     if 'fuzzy_set_dict' in session:
         fuzzy_set_dict = session['fuzzy_set_dict']
         fuzzy_set = FuzzySet(fuzzy_set_dict['parameter_name'], fuzzy_set_dict['parameter_values'], fuzzy_set_dict['expert_evaluations'])
-        
+
         graph_dict = prepare_graph_data(fuzzy_set.parameter_values, fuzzy_set.membership_function)
-        return render_template('result.html', fuzzy_set=fuzzy_set, cols_no=(len(fuzzy_set.parameter_values) + 1), precision=3,
+        return render_template('result.html', fuzzy_set=fuzzy_set, fuzzy_set_json=json.dumps(fuzzy_set, cls=FuzzySetEncoder), 
+                               cols_no=(len(fuzzy_set.parameter_values) + 1), precision=PRECISION, 
                                x_axis=graph_dict.keys(), y_axis=graph_dict.values())
 
 
@@ -56,7 +57,8 @@ def update_parameters():
     # Return JSON data containing the updated parameter values and graph data
     return jsonify({
         'fuzzy_set': fuzzy_set_json,
-        'graph_data': graph_data
+        'graph_data': graph_data,
+        'precision': PRECISION
     })
 
 @app.route('/help')
